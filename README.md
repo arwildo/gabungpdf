@@ -14,3 +14,8 @@ struktur seperti berikut :
   - 3112.pdf (hasil merge)
   - 3113.pdf (hasil merge)
 ```
+
+## How to Build
+- Pastikan Java JDK 15 sudah terinstall, silahakan download dari Bellsoft JDK 15 yang Full
+- Buildernya menggunakan Ant
+- Build menggunakan 'ant jar'
