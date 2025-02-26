@@ -1,0 +1,60 @@
+<project name="PDFMerger" default="run">
+    <!-- Define project properties -->
+    <property name="src.dir" value="."/>
+    <property name="build.dir" value="build"/>
+    <property name="lib.dir" value="lib"/>
+
+    <!-- Create directories -->
+    <target name="init">
+        <mkdir dir="${build.dir}"/>
+        <mkdir dir="${lib.dir}"/>
+        <!-- Download PDFBox and dependencies -->
+        <get src="https://repo1.maven.org/maven2/org/apache/pdfbox/pdfbox/2.0.29/pdfbox-2.0.29.jar"
+             dest="${lib.dir}/pdfbox-2.0.29.jar" skipexisting="true"/>
+        <get src="https://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar"
+             dest="${lib.dir}/commons-logging-1.2.jar" skipexisting="true"/>
+        <get src="https://repo1.maven.org/maven2/org/apache/pdfbox/fontbox/2.0.29/fontbox-2.0.29.jar"
+             dest="${lib.dir}/fontbox-2.0.29.jar" skipexisting="true"/>
+    </target>
+
+    <!-- Compile -->
+    <target name="compile" depends="init">
+        <javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="false" target="15" source="15">
+            <classpath>
+                <fileset dir="${lib.dir}" includes="*.jar"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <!-- Run -->
+    <target name="run" depends="compile">
+        <java classname="PDFMerger" fork="true">
+            <classpath>
+                <pathelement path="${build.dir}"/>
+                <fileset dir="${lib.dir}" includes="*.jar"/>
+            </classpath>
+        </java>
+    </target>
+
+    <!-- Create JAR -->
+    <target name="jar" depends="compile">
+        <!-- Copy all dependency JARs -->
+        <unjar dest="${build.dir}">
+            <fileset dir="${lib.dir}" includes="*.jar"/>
+        </unjar>
+        
+        <!-- Create executable JAR -->
+        <jar destfile="PDFMerger.jar" basedir="${build.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="PDFMerger"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <!-- Clean -->
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${lib.dir}"/>
+        <delete file="PDFMerger.jar"/>
+    </target>
+</project> 
